@@ -1,0 +1,342 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agent Runtime Lab | Measured report</title><style>
+body{margin:0;background:#f4f3ef;color:#24322c;font:16px/1.6 system-ui,sans-serif}main{max-width:1040px;margin:auto;padding:56px 24px}h1{font-size:clamp(32px,5vw,58px);line-height:1.08;letter-spacing:-2px;max-width:760px}h2{font-size:25px;margin-top:45px}small{font:12px monospace}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;background:#fff}th,td{text-align:left;padding:14px;border-bottom:1px solid #d6ded8}th{background:#e5ebe4}p{max-width:850px}.table{overflow:auto}a{color:inherit}.badge{display:inline-block;padding:6px 12px;background:#dce8dc;border-radius:4px}details{margin-top:30px;background:#fff;padding:18px}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}</style><main><small>SYNTHETIC / REPRODUCIBLE / PYTHON</small><h1>Faster session preparation.<br>Keep the mutation contract.</h1><span class="badge">Correctness gates passed</span><p>This measured educational runtime preserves nested input snapshots, fresh output containers, mutable public events and tool changes. No artificial sleeps. This is not an upstream Google ADK benchmark.</p><h2>Preparation time</h2><p>Median total milliseconds spent in prepare calls. Construction and append are excluded. Alternating paired repeats; raw samples remain in JSON.</p><div class="table"><table><tr><th>Turns / payload</th><th>Reference ms</th><th>Candidate ms</th><th>Reduction</th></tr><tr><td>50 / scalar</td><td>20.469</td><td>11.481</td><td>43.9%</td></tr><tr><td>50 / nested</td><td>34.903</td><td>15.896</td><td>54.5%</td></tr><tr><td>150 / scalar</td><td>96.458</td><td>39.839</td><td>58.7%</td></tr><tr><td>150 / nested</td><td>227.285</td><td>55.560</td><td>75.6%</td></tr></table></div><h2>Cold import and deferred work</h2><p>Fresh Python processes. A lazy import defers validator compilation rather than removing its cost. Both the first-use cost and total are shown.</p><div class="table"><table><tr><th>Module</th><th>Import ms</th><th>First access ms</th><th>Combined ms</th></tr><tr><td>adk_runtime_legacy</td><td>53.174</td><td>0.001</td><td>53.175</td></tr><tr><td>adk_runtime_optimized</td><td>11.026</td><td>42.437</td><td>53.273</td></tr></table></div><p>Full-history payloads still require O(history length) work. The candidate folds current public history and copies the final merged state instead of copying every superseded event delta. Schema digest caching invalidates on nested parameter changes. Results depend on workload and machine.</p><details><summary>Method, source hashes and exact measurements</summary><pre>{
+  &quot;schema_version&quot;: 1,
+  &quot;status&quot;: &quot;pass&quot;,
+  &quot;data&quot;: &quot;synthetic&quot;,
+  &quot;generated_utc&quot;: &quot;2026-10-18T23:18:28.496896+00:00&quot;,
+  &quot;environment&quot;: {
+    &quot;python&quot;: &quot;3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]&quot;,
+    &quot;platform&quot;: &quot;Windows-11-10.0.26300-SP0&quot;,
+    &quot;timer&quot;: &quot;perf_counter_ns&quot;
+  },
+  &quot;method&quot;: {
+    &quot;repeats&quot;: 9,
+    &quot;order&quot;: &quot;alternating pairs&quot;,
+    &quot;warmups&quot;: 1,
+    &quot;gc_during_timing&quot;: &quot;disabled/restored&quot;,
+    &quot;timed_region&quot;: &quot;sum of prepare_session_payload calls, append/construction excluded&quot;,
+    &quot;memory&quot;: &quot;separate tracemalloc whole-session run, not used for timing&quot;,
+    &quot;import&quot;: &quot;fresh processes, module span excludes interpreter startup; first registry access shown separately&quot;
+  },
+  &quot;unit_test_log&quot;: &quot;test_aliases_and_python_numeric_types_are_preserved_within_schema (test_contract.ContractTests.test_aliases_and_python_numeric_types_are_preserved_within_schema) ... ok\ntest_distinct_state_keys_remain_independent_after_export (test_contract.ContractTests.test_distinct_state_keys_remain_independent_after_export) ... ok\ntest_input_delta_is_snapshotted (test_contract.ContractTests.test_input_delta_is_snapshotted) ... ok\ntest_lazy_registry_is_equal_and_cached (test_contract.ContractTests.test_lazy_registry_is_equal_and_cached) ... ok\ntest_lazy_registry_not_built_on_fresh_import (test_contract.ContractTests.test_lazy_registry_not_built_on_fresh_import) ... ok\ntest_mutable_message_content_aliases_are_preserved (test_contract.ContractTests.test_mutable_message_content_aliases_are_preserved) ... ok\ntest_payload_mutation_does_not_leak (test_contract.ContractTests.test_payload_mutation_does_not_leak) ... ok\ntest_payloads_at_required_lengths (test_contract.ContractTests.test_payloads_at_required_lengths) ... ok\ntest_public_history_mutations_and_reorder_are_observed (test_contract.ContractTests.test_public_history_mutations_and_reorder_are_observed) ... ok\ntest_public_tool_parameters_preserve_python_containers (test_contract.ContractTests.test_public_tool_parameters_preserve_python_containers) ... ok\ntest_schema_return_isolation_and_fingerprint_invalidation (test_contract.ContractTests.test_schema_return_isolation_and_fingerprint_invalidation) ... ok\ntest_seeded_updates_keep_last_write_semantics (test_contract.ContractTests.test_seeded_updates_keep_last_write_semantics) ... ok\ntest_supplied_optimization_fails_mutation_contract (test_contract.ContractTests.test_supplied_optimization_fails_mutation_contract) ... ok\ntest_tool_schema_mutations_name_and_order (test_contract.ContractTests.test_tool_schema_mutations_name_and_order) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 0.736s\n\nOK\n&quot;,
+  &quot;sources&quot;: {
+    &quot;adk_runtime_legacy.py&quot;: &quot;1d7d47063cabcca9859b8fe0158b26b3e0f32441528ec32fc66f19310230dc67&quot;,
+    &quot;adk_runtime_optimized.py&quot;: &quot;bb141ba0a483b3b71e0e26f8321450566b82953e1eaf232d82bb81e9ef22b64c&quot;,
+    &quot;referee_adk_bench.py&quot;: &quot;48ec0e6b4b5aa330f8ff687423d4d645d5717d7c5cce6db424c4c6b8974b64ab&quot;,
+    &quot;workload.py&quot;: &quot;09b6447a99f22eada03a4087d0f6d2b92b2f28cf8dd465e165ec3de0e9702c17&quot;
+  },
+  &quot;imports&quot;: {
+    &quot;adk_runtime_legacy&quot;: {
+      &quot;import_ms&quot;: {
+        &quot;samples&quot;: [
+          55.6989,
+          56.3489,
+          52.7794,
+          56.1178,
+          52.6692,
+          52.379,
+          53.174,
+          56.7624,
+          51.6768
+        ],
+        &quot;median&quot;: 53.174,
+        &quot;min&quot;: 51.6768,
+        &quot;max&quot;: 56.7624,
+        &quot;p10&quot;: 51.6768,
+        &quot;p90&quot;: 56.3489
+      },
+      &quot;first_registry_access_ms&quot;: {
+        &quot;samples&quot;: [
+          0.0011,
+          0.0011,
+          0.0011,
+          0.0011,
+          0.0011,
+          0.0009,
+          0.0013,
+          0.0008,
+          0.001
+        ],
+        &quot;median&quot;: 0.0011,
+        &quot;min&quot;: 0.0008,
+        &quot;max&quot;: 0.0013,
+        &quot;p10&quot;: 0.0008,
+        &quot;p90&quot;: 0.0011
+      },
+      &quot;import_plus_registry_ms&quot;: {
+        &quot;samples&quot;: [
+          55.7,
+          56.35,
+          52.7805,
+          56.1189,
+          52.6703,
+          52.3799,
+          53.1753,
+          56.7632,
+          51.6778
+        ],
+        &quot;median&quot;: 53.1753,
+        &quot;min&quot;: 51.6778,
+        &quot;max&quot;: 56.7632,
+        &quot;p10&quot;: 51.6778,
+        &quot;p90&quot;: 56.35
+      }
+    },
+    &quot;adk_runtime_optimized&quot;: {
+      &quot;import_ms&quot;: {
+        &quot;samples&quot;: [
+          10.7642,
+          11.1095,
+          11.2025,
+          11.0262,
+          11.1112,
+          10.9071,
+          11.1337,
+          10.796,
+          10.7699
+        ],
+        &quot;median&quot;: 11.0262,
+        &quot;min&quot;: 10.7642,
+        &quot;max&quot;: 11.2025,
+        &quot;p10&quot;: 10.7642,
+        &quot;p90&quot;: 11.1337
+      },
+      &quot;first_registry_access_ms&quot;: {
+        &quot;samples&quot;: [
+          42.4373,
+          42.1638,
+          42.8792,
+          41.6722,
+          42.0967,
+          42.817,
+          43.6939,
+          41.5377,
+          45.7409
+        ],
+        &quot;median&quot;: 42.4373,
+        &quot;min&quot;: 41.5377,
+        &quot;max&quot;: 45.7409,
+        &quot;p10&quot;: 41.5377,
+        &quot;p90&quot;: 43.6939
+      },
+      &quot;import_plus_registry_ms&quot;: {
+        &quot;samples&quot;: [
+          53.2015,
+          53.2733,
+          54.0817,
+          52.6984,
+          53.2079,
+          53.7241,
+          54.8276,
+          52.3337,
+          56.5108
+        ],
+        &quot;median&quot;: 53.2733,
+        &quot;min&quot;: 52.3337,
+        &quot;max&quot;: 56.5108,
+        &quot;p10&quot;: 52.3337,
+        &quot;p90&quot;: 54.8276
+      }
+    }
+  },
+  &quot;import_median_reduction_percent&quot;: 79.26392597886185,
+  &quot;workloads&quot;: [
+    {
+      &quot;turns&quot;: 50,
+      &quot;nested&quot;: false,
+      &quot;payload_sha256&quot;: &quot;ac2791ed38663d0242978393ef190b2c6fc8434445e1c59c13865db5053c2f2a&quot;,
+      &quot;prepare_total_ms&quot;: {
+        &quot;adk_runtime_legacy&quot;: {
+          &quot;samples&quot;: [
+            20.2452,
+            21.1293,
+            20.8057,
+            20.4152,
+            20.4284,
+            20.3252,
+            20.4703,
+            21.0078,
+            20.4689
+          ],
+          &quot;median&quot;: 20.4689,
+          &quot;min&quot;: 20.2452,
+          &quot;max&quot;: 21.1293,
+          &quot;p10&quot;: 20.2452,
+          &quot;p90&quot;: 21.0078
+        },
+        &quot;adk_runtime_optimized&quot;: {
+          &quot;samples&quot;: [
+            12.0095,
+            11.466,
+            11.3996,
+            11.6025,
+            11.663,
+            11.5808,
+            11.4592,
+            11.3806,
+            11.4813
+          ],
+          &quot;median&quot;: 11.4813,
+          &quot;min&quot;: 11.3806,
+          &quot;max&quot;: 12.0095,
+          &quot;p10&quot;: 11.3806,
+          &quot;p90&quot;: 11.663
+        }
+      },
+      &quot;median_reduction_percent&quot;: 43.90856372350249,
+      &quot;whole_session_peak_bytes&quot;: {
+        &quot;adk_runtime_legacy&quot;: 121427,
+        &quot;adk_runtime_optimized&quot;: 105453
+      }
+    },
+    {
+      &quot;turns&quot;: 50,
+      &quot;nested&quot;: true,
+      &quot;payload_sha256&quot;: &quot;48fb8e9f2a6a86faef32a6984b3da5679752cca84478d6e4222c45b84506553f&quot;,
+      &quot;prepare_total_ms&quot;: {
+        &quot;adk_runtime_legacy&quot;: {
+          &quot;samples&quot;: [
+            36.8822,
+            34.8728,
+            34.5472,
+            35.2338,
+            35.2618,
+            34.6403,
+            34.6311,
+            37.7574,
+            34.9033
+          ],
+          &quot;median&quot;: 34.9033,
+          &quot;min&quot;: 34.5472,
+          &quot;max&quot;: 37.7574,
+          &quot;p10&quot;: 34.5472,
+          &quot;p90&quot;: 36.8822
+        },
+        &quot;adk_runtime_optimized&quot;: {
+          &quot;samples&quot;: [
+            16.5694,
+            16.658,
+            18.9214,
+            15.6991,
+            15.9603,
+            15.896,
+            15.4855,
+            15.4259,
+            15.7246
+          ],
+          &quot;median&quot;: 15.896,
+          &quot;min&quot;: 15.4259,
+          &quot;max&quot;: 18.9214,
+          &quot;p10&quot;: 15.4259,
+          &quot;p90&quot;: 16.658
+        }
+      },
+      &quot;median_reduction_percent&quot;: 54.457028418516295,
+      &quot;whole_session_peak_bytes&quot;: {
+        &quot;adk_runtime_legacy&quot;: 187399,
+        &quot;adk_runtime_optimized&quot;: 149905
+      }
+    },
+    {
+      &quot;turns&quot;: 150,
+      &quot;nested&quot;: false,
+      &quot;payload_sha256&quot;: &quot;57fd06300764b0b1f9c54ee0e49c9d39420a74d715ab0f427d3a7ef413a6ba16&quot;,
+      &quot;prepare_total_ms&quot;: {
+        &quot;adk_runtime_legacy&quot;: {
+          &quot;samples&quot;: [
+            102.5433,
+            97.5883,
+            97.2945,
+            96.4576,
+            95.9939,
+            95.1372,
+            91.641,
+            95.5627,
+            103.6958
+          ],
+          &quot;median&quot;: 96.4576,
+          &quot;min&quot;: 91.641,
+          &quot;max&quot;: 103.6958,
+          &quot;p10&quot;: 91.641,
+          &quot;p90&quot;: 102.5433
+        },
+        &quot;adk_runtime_optimized&quot;: {
+          &quot;samples&quot;: [
+            39.7548,
+            40.0404,
+            40.8918,
+            40.4932,
+            39.5226,
+            40.155,
+            39.714,
+            39.8387,
+            39.4793
+          ],
+          &quot;median&quot;: 39.8387,
+          &quot;min&quot;: 39.4793,
+          &quot;max&quot;: 40.8918,
+          &quot;p10&quot;: 39.4793,
+          &quot;p90&quot;: 40.4932
+        }
+      },
+      &quot;median_reduction_percent&quot;: 58.69822595627509,
+      &quot;whole_session_peak_bytes&quot;: {
+        &quot;adk_runtime_legacy&quot;: 245431,
+        &quot;adk_runtime_optimized&quot;: 191697
+      }
+    },
+    {
+      &quot;turns&quot;: 150,
+      &quot;nested&quot;: true,
+      &quot;payload_sha256&quot;: &quot;0ff0da6bb5936b6e2507788a4911d6e22d88317b9f5e9662bfa72b3c06d917e7&quot;,
+      &quot;prepare_total_ms&quot;: {
+        &quot;adk_runtime_legacy&quot;: {
+          &quot;samples&quot;: [
+            234.4656,
+            240.0304,
+            250.6092,
+            253.4159,
+            227.2851,
+            222.5858,
+            215.6989,
+            218.9726,
+            215.4625
+          ],
+          &quot;median&quot;: 227.2851,
+          &quot;min&quot;: 215.4625,
+          &quot;max&quot;: 253.4159,
+          &quot;p10&quot;: 215.4625,
+          &quot;p90&quot;: 250.6092
+        },
+        &quot;adk_runtime_optimized&quot;: {
+          &quot;samples&quot;: [
+            55.5887,
+            55.8091,
+            55.1384,
+            65.5838,
+            55.5605,
+            56.5127,
+            50.0986,
+            54.4043,
+            53.5739
+          ],
+          &quot;median&quot;: 55.5605,
+          &quot;min&quot;: 50.0986,
+          &quot;max&quot;: 65.5838,
+          &quot;p10&quot;: 50.0986,
+          &quot;p90&quot;: 56.5127
+        }
+      },
+      &quot;median_reduction_percent&quot;: 75.55471080154396,
+      &quot;whole_session_peak_bytes&quot;: {
+        &quot;adk_runtime_legacy&quot;: 420251,
+        &quot;adk_runtime_optimized&quot;: 286211
+      }
+    }
+  ],
+  &quot;requested_targets&quot;: {
+    &quot;import_reduction_percent&quot;: 20,
+    &quot;prepare_reduction_percent&quot;: 40
+  },
+  &quot;performance_targets_met&quot;: true
+}</pre></details><p><a href="https://github.com/vanovri/agent-runtime-lab">Source and contract tests</a> · Developed with Codex assistance.</p></main></html>

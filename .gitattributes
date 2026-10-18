@@ -1,0 +1,3 @@
+* text=auto eol=lf
+*.png binary
+tests/fixtures/*.py -text whitespace=-blank-at-eof,cr-at-eol

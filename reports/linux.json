@@ -1,0 +1,341 @@
+{
+  "schema_version": 1,
+  "status": "pass",
+  "data": "synthetic",
+  "generated_utc": "2026-10-18T23:19:19.731085+00:00",
+  "environment": {
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "timer": "perf_counter_ns"
+  },
+  "method": {
+    "repeats": 9,
+    "order": "alternating pairs",
+    "warmups": 1,
+    "gc_during_timing": "disabled/restored",
+    "timed_region": "sum of prepare_session_payload calls, append/construction excluded",
+    "memory": "separate tracemalloc whole-session run, not used for timing",
+    "import": "fresh processes, module span excludes interpreter startup; first registry access shown separately"
+  },
+  "unit_test_log": "test_aliases_and_python_numeric_types_are_preserved_within_schema (test_contract.ContractTests.test_aliases_and_python_numeric_types_are_preserved_within_schema) ... ok\ntest_distinct_state_keys_remain_independent_after_export (test_contract.ContractTests.test_distinct_state_keys_remain_independent_after_export) ... ok\ntest_input_delta_is_snapshotted (test_contract.ContractTests.test_input_delta_is_snapshotted) ... ok\ntest_lazy_registry_is_equal_and_cached (test_contract.ContractTests.test_lazy_registry_is_equal_and_cached) ... ok\ntest_lazy_registry_not_built_on_fresh_import (test_contract.ContractTests.test_lazy_registry_not_built_on_fresh_import) ... ok\ntest_mutable_message_content_aliases_are_preserved (test_contract.ContractTests.test_mutable_message_content_aliases_are_preserved) ... ok\ntest_payload_mutation_does_not_leak (test_contract.ContractTests.test_payload_mutation_does_not_leak) ... ok\ntest_payloads_at_required_lengths (test_contract.ContractTests.test_payloads_at_required_lengths) ... ok\ntest_public_history_mutations_and_reorder_are_observed (test_contract.ContractTests.test_public_history_mutations_and_reorder_are_observed) ... ok\ntest_public_tool_parameters_preserve_python_containers (test_contract.ContractTests.test_public_tool_parameters_preserve_python_containers) ... ok\ntest_schema_return_isolation_and_fingerprint_invalidation (test_contract.ContractTests.test_schema_return_isolation_and_fingerprint_invalidation) ... ok\ntest_seeded_updates_keep_last_write_semantics (test_contract.ContractTests.test_seeded_updates_keep_last_write_semantics) ... ok\ntest_supplied_optimization_fails_mutation_contract (test_contract.ContractTests.test_supplied_optimization_fails_mutation_contract) ... ok\ntest_tool_schema_mutations_name_and_order (test_contract.ContractTests.test_tool_schema_mutations_name_and_order) ... ok\n\n----------------------------------------------------------------------\nRan 14 tests in 0.506s\n\nOK\n",
+  "sources": {
+    "adk_runtime_legacy.py": "1d7d47063cabcca9859b8fe0158b26b3e0f32441528ec32fc66f19310230dc67",
+    "adk_runtime_optimized.py": "bb141ba0a483b3b71e0e26f8321450566b82953e1eaf232d82bb81e9ef22b64c",
+    "referee_adk_bench.py": "48ec0e6b4b5aa330f8ff687423d4d645d5717d7c5cce6db424c4c6b8974b64ab",
+    "workload.py": "09b6447a99f22eada03a4087d0f6d2b92b2f28cf8dd465e165ec3de0e9702c17"
+  },
+  "imports": {
+    "adk_runtime_legacy": {
+      "import_ms": {
+        "samples": [
+          42.780393,
+          55.504791,
+          45.063492,
+          71.381388,
+          53.181791,
+          45.758693,
+          46.118292,
+          46.114893,
+          58.89289
+        ],
+        "median": 46.118292,
+        "min": 42.780393,
+        "max": 71.381388,
+        "p10": 42.780393,
+        "p90": 58.89289
+      },
+      "first_registry_access_ms": {
+        "samples": [
+          0.0008,
+          0.0009,
+          0.0011,
+          0.0025,
+          0.0009,
+          0.0009,
+          0.0008,
+          0.0008,
+          0.0009
+        ],
+        "median": 0.0009,
+        "min": 0.0008,
+        "max": 0.0025,
+        "p10": 0.0008,
+        "p90": 0.0011
+      },
+      "import_plus_registry_ms": {
+        "samples": [
+          42.781193,
+          55.505691,
+          45.064592,
+          71.383888,
+          53.182691,
+          45.759593,
+          46.119092,
+          46.115693,
+          58.89379
+        ],
+        "median": 46.119092,
+        "min": 42.781193,
+        "max": 71.383888,
+        "p10": 42.781193,
+        "p90": 58.89379
+      }
+    },
+    "adk_runtime_optimized": {
+      "import_ms": {
+        "samples": [
+          8.291399,
+          11.907498,
+          9.381299,
+          11.605098,
+          12.128298,
+          11.075698,
+          11.348398,
+          11.542698,
+          11.612498
+        ],
+        "median": 11.542698,
+        "min": 8.291399,
+        "max": 12.128298,
+        "p10": 8.291399,
+        "p90": 11.907498
+      },
+      "first_registry_access_ms": {
+        "samples": [
+          32.609094,
+          43.720692,
+          33.429194,
+          39.560893,
+          39.732693,
+          36.728694,
+          35.396794,
+          36.895393,
+          36.235093
+        ],
+        "median": 36.728694,
+        "min": 32.609094,
+        "max": 43.720692,
+        "p10": 32.609094,
+        "p90": 39.732693
+      },
+      "import_plus_registry_ms": {
+        "samples": [
+          40.900493,
+          55.62819,
+          42.810493,
+          51.165991,
+          51.860991,
+          47.804392,
+          46.745192,
+          48.438091,
+          47.847591
+        ],
+        "median": 47.847591,
+        "min": 40.900493,
+        "max": 55.62819,
+        "p10": 40.900493,
+        "p90": 51.860991
+      }
+    }
+  },
+  "import_median_reduction_percent": 74.97154057656775,
+  "workloads": [
+    {
+      "turns": 50,
+      "nested": false,
+      "payload_sha256": "ac2791ed38663d0242978393ef190b2c6fc8434445e1c59c13865db5053c2f2a",
+      "prepare_total_ms": {
+        "adk_runtime_legacy": {
+          "samples": [
+            17.629098,
+            15.906097,
+            15.972398,
+            16.482498,
+            16.849297,
+            18.818597,
+            19.164597,
+            19.469296,
+            19.716498
+          ],
+          "median": 17.629098,
+          "min": 15.906097,
+          "max": 19.716498,
+          "p10": 15.906097,
+          "p90": 19.469296
+        },
+        "adk_runtime_optimized": {
+          "samples": [
+            9.6838,
+            8.837998,
+            9.045899,
+            8.852898,
+            9.574198,
+            9.473098,
+            11.883398,
+            10.678198,
+            10.955998
+          ],
+          "median": 9.574198,
+          "min": 8.837998,
+          "max": 11.883398,
+          "p10": 8.837998,
+          "p90": 10.955998
+        }
+      },
+      "median_reduction_percent": 45.690936654841884,
+      "whole_session_peak_bytes": {
+        "adk_runtime_legacy": 121427,
+        "adk_runtime_optimized": 105461
+      }
+    },
+    {
+      "turns": 50,
+      "nested": true,
+      "payload_sha256": "48fb8e9f2a6a86faef32a6984b3da5679752cca84478d6e4222c45b84506553f",
+      "prepare_total_ms": {
+        "adk_runtime_legacy": {
+          "samples": [
+            26.678295,
+            27.695997,
+            29.476795,
+            29.579795,
+            30.208995,
+            35.088793,
+            33.398795,
+            33.487795,
+            31.980895
+          ],
+          "median": 30.208995,
+          "min": 26.678295,
+          "max": 35.088793,
+          "p10": 26.678295,
+          "p90": 33.487795
+        },
+        "adk_runtime_optimized": {
+          "samples": [
+            11.875098,
+            12.061298,
+            12.910099,
+            13.859098,
+            18.378196,
+            14.610498,
+            14.131297,
+            15.264797,
+            18.718497
+          ],
+          "median": 14.131297,
+          "min": 11.875098,
+          "max": 18.718497,
+          "p10": 11.875098,
+          "p90": 18.378196
+        }
+      },
+      "median_reduction_percent": 53.22155867813544,
+      "whole_session_peak_bytes": {
+        "adk_runtime_legacy": 187407,
+        "adk_runtime_optimized": 149921
+      }
+    },
+    {
+      "turns": 150,
+      "nested": false,
+      "payload_sha256": "57fd06300764b0b1f9c54ee0e49c9d39420a74d715ab0f427d3a7ef413a6ba16",
+      "prepare_total_ms": {
+        "adk_runtime_legacy": {
+          "samples": [
+            74.185488,
+            76.228088,
+            73.785187,
+            73.530788,
+            73.207288,
+            76.741788,
+            76.749387,
+            70.667888,
+            68.177589
+          ],
+          "median": 73.785187,
+          "min": 68.177589,
+          "max": 76.749387,
+          "p10": 68.177589,
+          "p90": 76.741788
+        },
+        "adk_runtime_optimized": {
+          "samples": [
+            31.066094,
+            30.940296,
+            30.822695,
+            30.343394,
+            30.180995,
+            28.846895,
+            29.490995,
+            30.558195,
+            29.008895
+          ],
+          "median": 30.343394,
+          "min": 28.846895,
+          "max": 31.066094,
+          "p10": 28.846895,
+          "p90": 30.940296
+        }
+      },
+      "median_reduction_percent": 58.8760356465587,
+      "whole_session_peak_bytes": {
+        "adk_runtime_legacy": 245431,
+        "adk_runtime_optimized": 191705
+      }
+    },
+    {
+      "turns": 150,
+      "nested": true,
+      "payload_sha256": "0ff0da6bb5936b6e2507788a4911d6e22d88317b9f5e9662bfa72b3c06d917e7",
+      "prepare_total_ms": {
+        "adk_runtime_legacy": {
+          "samples": [
+            165.455172,
+            168.544872,
+            154.299675,
+            161.465972,
+            168.734072,
+            163.326993,
+            170.805294,
+            161.777693,
+            171.541093
+          ],
+          "median": 165.455172,
+          "min": 154.299675,
+          "max": 171.541093,
+          "p10": 154.299675,
+          "p90": 170.805294
+        },
+        "adk_runtime_optimized": {
+          "samples": [
+            38.445293,
+            39.332994,
+            37.891693,
+            42.307595,
+            40.329095,
+            41.318299,
+            42.466698,
+            41.495099,
+            43.937098
+          ],
+          "median": 41.318299,
+          "min": 37.891693,
+          "max": 43.937098,
+          "p10": 37.891693,
+          "p90": 42.466698
+        }
+      },
+      "median_reduction_percent": 75.02749626950313,
+      "whole_session_peak_bytes": {
+        "adk_runtime_legacy": 420267,
+        "adk_runtime_optimized": 286227
+      }
+    }
+  ],
+  "requested_targets": {
+    "import_reduction_percent": 20,
+    "prepare_reduction_percent": 40
+  },
+  "performance_targets_met": true
+}

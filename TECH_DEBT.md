@@ -25,24 +25,20 @@ Reviewed on 2026-11-07 against the current working tree on disk. All line number
 ## TD-02 — Extend `_clone` fast path to `tuple` containers before falling back to `copy.deepcopy`
 
 - **Location**: `adk_runtime_optimized.py:60-67`
-- **Analysis**: Plain `tuple` values in `content` or `parameters` miss `_ATOMIC` and fall back to `copy.deepcopy(value, memo)`, incurring generic dispatch overhead even when all tuple elements are atomic.
+- **Analysis**: All-atomic plain tuples miss `_ATOMIC` and fall back to generic `copy.deepcopy`. An atomic-only shortcut can return the same immutable tuple. Tuples containing mutable values must keep the existing fallback because tuple/list cycles and shared aliases need deepcopy's reentrant handling. This is a small constant-factor proposal, not an established benchmark improvement.
 
 ```diff
 --- a/adk_runtime_optimized.py
 +++ b/adk_runtime_optimized.py
-@@ -64,6 +64,14 @@
+@@ -64,6 +64,8 @@
              item if type(item) in _ATOMIC else _clone(item, memo) for item in value
          )
          return cloned_list
-+    if kind is tuple:
-+        if all(type(item) in _ATOMIC for item in value):
-+            return value
-+        cloned_tuple = tuple(
-+            item if type(item) in _ATOMIC else _clone(item, memo) for item in value
-+        )
-+        memo[identity] = cloned_tuple
-+        return cloned_tuple
++    if kind is tuple and all(type(item) in _ATOMIC for item in value):
++        return value
      return copy.deepcopy(value, memo)
+ 
+ 
 ```
 
 - **Validation**: Test atomic tuples, tuples containing mutable dicts/lists, and shared tuple aliases via `C:\Python314\python.exe -m pytest -q`.

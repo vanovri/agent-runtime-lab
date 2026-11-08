@@ -121,6 +121,7 @@ class ContractTests(unittest.TestCase):
             params: dict[str, Any] = {"enum": ("a", "b")}
             schema = module.ToolDefinition("n", "d", params).to_schema()
             self.assertIsInstance(schema["parameters"]["enum"], tuple)
+        self.assertEqual(schema["parameters"]["enum"], ("a", "b"))
 
     def test_aliases_and_python_numeric_types_are_preserved_within_schema(self) -> None:
         modules: tuple[Any, Any] = (reference, candidate)

@@ -142,8 +142,12 @@ class RuntimeIsolationAndCloneTests(unittest.TestCase):
         for mod in modules:
             reg = mod.GLOBAL_VALIDATOR_REGISTRY
             self.assertEqual(len(reg), 400)
-            self.assertIsNotNone(reg["rule_0"].match("agent_id_0_abcdefgh"))
-            self.assertIsNotNone(reg["rule_399"].match("session_id_399_A1_b2-C3d4"))
+            m0 = reg["rule_0"].match("agent_id_0_abcdefgh")
+            self.assertIsNotNone(m0)
+            self.assertEqual(m0.group(0), "agent_id_0_abcdefgh")
+            m399 = reg["rule_399"].match("session_id_399_A1_b2-C3d4")
+            self.assertIsNotNone(m399)
+            self.assertEqual(m399.group(0), "session_id_399_A1_b2-C3d4")
             self.assertIsNone(reg["rule_0"].match("agent_id_0_short"))
             self.assertIsNone(reg["rule_0"].match("agent_id_1_abcdefgh"))
 

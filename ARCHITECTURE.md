@@ -1,6 +1,8 @@
 # Architecture: agent-runtime-lab
 
-Reviewed on 2026-11-07 against the local working tree (`C:/Users/ardhy/Projects/agent-runtime-lab`). `graphify-out/graph.json` provides the local AST symbol graph.
+Crosscheck: 2026-11-08 WIB. The repository-local offline checks completed with exit code 0 in an interpreter/environment containing the declared dependencies. Hardware, live providers, deployment and unexecuted CI platforms are separate evidence boundaries.
+
+Reviewed on 2026-11-07 against the local working tree (`.`). `graphify-out/graph.json` provides the local AST symbol graph.
 
 ## 1. System Context & Data Flow
 
@@ -58,7 +60,7 @@ participant R as referee_adk_bench.py
 ## 5. Verification Commands
 
 ```powershell
-Set-Location 'C:\Users\ardhy\Projects\agent-runtime-lab'
+Set-Location '.'
 & 'C:\Python314\python.exe' -m pytest -q
 ```
 

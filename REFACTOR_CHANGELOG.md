@@ -52,11 +52,11 @@
 
 ```powershell
 # 1. Pytest + Coverage -> Exit Code: 0 (43 passed, 59 subtests passed, 99% coverage)
-C:\Users\ardhy\.gemini\antigravity\brain\7b19fb5e-cc47-425f-9713-ee64d56c8136\scratch\qa-tools\qa-venv\Scripts\python.exe -m pytest --cov=adk_runtime_legacy --cov=adk_runtime_optimized --cov=referee_adk_bench --cov=workload --cov-report=term-missing
+python -m pytest --cov=adk_runtime_legacy --cov=adk_runtime_optimized --cov=referee_adk_bench --cov=workload --cov-report=term-missing
 
 # 2. Ruff Linter -> Exit Code: 0 (All checks passed!)
-C:\Users\ardhy\.gemini\antigravity\brain\7b19fb5e-cc47-425f-9713-ee64d56c8136\scratch\qa-tools\qa-venv\Scripts\ruff.exe check adk_runtime_legacy.py adk_runtime_optimized.py referee_adk_bench.py workload.py tests
+ruff check adk_runtime_legacy.py adk_runtime_optimized.py referee_adk_bench.py workload.py tests
 
 # 3. Mypy Type Checker -> Exit Code: 0 (Success: no issues found in 4 source files)
-C:\Users\ardhy\.gemini\antigravity\brain\7b19fb5e-cc47-425f-9713-ee64d56c8136\scratch\qa-tools\qa-venv\Scripts\mypy.exe adk_runtime_legacy.py adk_runtime_optimized.py referee_adk_bench.py workload.py --ignore-missing-imports
+mypy adk_runtime_legacy.py adk_runtime_optimized.py referee_adk_bench.py workload.py --ignore-missing-imports
 ```

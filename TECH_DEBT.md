@@ -1,6 +1,8 @@
 # Technical Debt & Performance Ledger: agent-runtime-lab
 
-Reviewed on 2026-11-07 against the current working tree on disk. All line numbers are 1-based and verified directly against the current production files. Every diff below is a non-destructive engineering proposal, not an applied production edit.
+Crosschecked 2026-11-08 WIB. All code diffs below are proposal-only and have not changed production source. Source references and removed patch lines were checked against this working tree. Runtime speedups remain unmeasured unless evidence is explicitly cited.
+
+Reviewed on 2026-11-08 WIB against the current working tree on disk. All line numbers are 1-based and verified directly against the current production files. Every diff below is a non-destructive engineering proposal, not an applied production edit.
 
 ## TD-01 — Use `_clone(state_delta)` fast path instead of `copy.deepcopy` in `OptimizedAgentSession.append_turn`
 
@@ -8,9 +10,10 @@ Reviewed on 2026-11-07 against the current working tree on disk. All line number
 - **Analysis**: `OptimizedAgentSession` defines `_clone` specifically to avoid `copy.deepcopy` dispatch overhead on plain JSON-like `dict`/`list`/primitive trees, yet `append_turn` still invokes `copy.deepcopy(state_delta)` on every turn.
 
 ```diff
+diff --git a/adk_runtime_optimized.py b/adk_runtime_optimized.py
 --- a/adk_runtime_optimized.py
 +++ b/adk_runtime_optimized.py
-@@ -149,7 +149,7 @@
+@@ -149,6 +149,6 @@
                  "turn": len(self.events),
                  "role": role,
                  "content": content,
@@ -28,6 +31,7 @@ Reviewed on 2026-11-07 against the current working tree on disk. All line number
 - **Analysis**: All-atomic plain tuples miss `_ATOMIC` and fall back to generic `copy.deepcopy`. An atomic-only shortcut can return the same immutable tuple. Tuples containing mutable values must keep the existing fallback because tuple/list cycles and shared aliases need deepcopy's reentrant handling. This is a small constant-factor proposal, not an established benchmark improvement.
 
 ```diff
+diff --git a/adk_runtime_optimized.py b/adk_runtime_optimized.py
 --- a/adk_runtime_optimized.py
 +++ b/adk_runtime_optimized.py
 @@ -64,6 +64,8 @@
